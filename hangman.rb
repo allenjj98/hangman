@@ -1,11 +1,19 @@
+module Letters
+    ALPHABET = ("a".."z").to_a
+end
+
+
 
 class Game
+    include Letters
     attr_reader :dict_words, :secret_word
+    attr_accessor :correct_guesses
 
     def initialize
         @dict_words = File.readlines("google-10000-english-no-swears.txt")
         @secret_word = random_select_word
 
+        @correct_guesses = display_correct_guesses
 
         @guesses = 0
         @incorrect_guesses = []
@@ -16,12 +24,24 @@ class Game
         filtered_dict = dict_words.select do |word|
             word.chomp.length >= 5 and word.chomp.length <= 12
         end
-        filtered_dict.sample.chomp
+        filtered_dict.sample.chomp.downcase
     end
 
     # display the letters correctly guessed by the user. When initialised, this needs to represent the length of the secret words with underscores.
     def display_correct_guesses
-        p secret_word.length
+        "_ " * secret_word.length
+    end
+
+    def user_make_guess
+        while true
+            puts "Guess a letter: "
+            letter = gets.chomp.downcase
+            if ALPHABET.include?(letter)
+                return letter
+            else
+                next
+            end
+        end
     end
 
 
@@ -29,6 +49,10 @@ end
 
 
 play = Game.new()
-p play.secret_word
-play.display_correct_guesses
+play.user_make_guess
+
+
+
+
+
 
