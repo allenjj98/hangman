@@ -6,7 +6,7 @@ end
 
 class Game
     include Letters
-    attr_reader :dict_words, :secret_word
+    attr_reader :dict_words, :secret_word, :incorrect_guesses
     attr_accessor :correct_guesses
 
     def initialize
@@ -29,7 +29,7 @@ class Game
 
     # display the letters correctly guessed by the user. When initialised, this needs to represent the length of the secret words with underscores.
     def display_correct_guesses
-        "_ " * secret_word.length
+        Array.new(secret_word.length, "_")
     end
 
     def user_make_guess
@@ -44,12 +44,29 @@ class Game
         end
     end
 
-
+    def check_guess(guess)
+        array_secret_word = secret_word.split("")
+        if array_secret_word.any?(guess)
+            array_secret_word.each_with_index do |letter, index|
+                if guess == letter
+                    correct_guesses[index] = guess
+                end
+            end
+        else
+            incorrect_guesses.push(guess)
+        end
+        p correct_guesses
+        p incorrect_guesses
+    end
 end
 
 
 play = Game.new()
-play.user_make_guess
+p play.secret_word
+user_guess = play.user_make_guess
+play.check_guess(user_guess)
+
+
 
 
 
