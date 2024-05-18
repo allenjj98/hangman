@@ -7,7 +7,7 @@ end
 class Game
     include Letters
     attr_reader :dict_words, :secret_word, :incorrect_guesses
-    attr_accessor :correct_guesses
+    attr_accessor :correct_guesses, :guesses
 
     def initialize
         @dict_words = File.readlines("google-10000-english-no-swears.txt")
@@ -15,9 +15,20 @@ class Game
 
         @correct_guesses = display_correct_guesses
 
-        @guesses = 0
+        @guesses = 8
         @incorrect_guesses = []
     end
+
+
+    # continue to allow the user to guess until they have run out of guesses
+    def play
+        until guesses == 0
+            guess = user_make_guess
+            check_guess(guess)
+        end
+    end
+
+
 
     # need to randomly select a word from the dictionary. This word has to be between 5 and 12 characters.
     def random_select_word
@@ -36,10 +47,13 @@ class Game
         while true
             puts "Guess a letter: "
             letter = gets.chomp.downcase
-            if ALPHABET.include?(letter)
-                return letter
+            if correct_guesses.include?(letter) || incorrect_guesses.include?(letter)
+                puts "You have already guessed the letter #{letter}"
+            elsif !ALPHABET.include?(letter)
+                puts "You enter a letter between a-z"
             else
-                next
+                @guesses -= 1
+                return letter
             end
         end
     end
@@ -55,16 +69,14 @@ class Game
         else
             incorrect_guesses.push(guess)
         end
-        p correct_guesses
-        p incorrect_guesses
+        p "Your guess: #{correct_guesses.join(" ")}"
+        puts "Incorrect letters: #{incorrect_guesses}" 
     end
 end
 
 
 play = Game.new()
-p play.secret_word
-user_guess = play.user_make_guess
-play.check_guess(user_guess)
+play.play
 
 
 
