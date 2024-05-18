@@ -25,8 +25,20 @@ class Game
         until guesses == 0
             guess = user_make_guess
             check_guess(guess)
+            if user_has_won?
+                next
+            else
+                puts "You have successfully guessed the secret word"
+                return
+            end
         end
+        puts "You are out of guesses. The secret word was #{secret_word}"
     end
+
+    def user_has_won?
+        correct_guesses.any?("_")
+    end
+
 
 
 
@@ -45,12 +57,13 @@ class Game
 
     def user_make_guess
         while true
+            puts "You have #{guesses} guesses remaining!"
             puts "Guess a letter: "
             letter = gets.chomp.downcase
             if correct_guesses.include?(letter) || incorrect_guesses.include?(letter)
                 puts "You have already guessed the letter #{letter}"
             elsif !ALPHABET.include?(letter)
-                puts "You enter a letter between a-z"
+                puts "You must enter a letter between a-z"
             else
                 @guesses -= 1
                 return letter
@@ -76,6 +89,7 @@ end
 
 
 play = Game.new()
+p play.secret_word
 play.play
 
 
