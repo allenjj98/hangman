@@ -26,12 +26,17 @@ class Game
     def play
         until guesses == 0
             guess = user_make_guess
-            check_guess(guess)
-            if user_has_won?
-                next
-            else
-                puts "You have successfully guessed the secret word"
+            if guess == "save"
+                serialize
                 return
+            else
+                check_guess(guess)
+                if user_has_won?
+                    next
+                else
+                    puts "You have successfully guessed the secret word"
+                    return
+                end
             end
         end
         puts "You are out of guesses. The secret word was #{secret_word}"
@@ -81,10 +86,12 @@ class Game
     def user_make_guess
         while true
             puts "You have #{guesses} guesses remaining!"
-            puts "Guess a letter: "
+            puts "Guess a letter or save game ('save'): "
             letter = gets.chomp.downcase
             if correct_guesses.include?(letter) || incorrect_guesses.include?(letter)
                 puts "You have already guessed the letter #{letter}"
+            elsif letter == "save"
+                return letter
             elsif !ALPHABET.include?(letter)
                 puts "You must enter a letter between a-z"
             else
@@ -111,5 +118,20 @@ class Game
 end
 
 
-play = Game.new()
-play.serialize
+def deserialise
+    while true
+        puts "Enter the name of the file you would like to load"
+        load_file = gets.chomp.concat(".yaml")
+        if File.exist?(load_file)
+            File.open(load_file, "r") do |file|
+                loaded_game = YAML.unsafe_load_file(file)
+                p loaded_game
+         end
+            return
+        else
+            puts "File does not exist!"
+            next
+        end
+    end
+end
+
