@@ -125,9 +125,8 @@ def deserialise
         if File.exist?(load_file)
             File.open(load_file, "r") do |file|
                 loaded_game = YAML.unsafe_load_file(file)
-                p loaded_game
-         end
-            return
+                return loaded_game
+            end
         else
             puts "File does not exist!"
             next
@@ -135,3 +134,15 @@ def deserialise
     end
 end
 
+
+
+
+puts "Would you like to load a previous game? (y/n): "
+load_game_yes_no = gets.chomp.downcase
+if load_game_yes_no == "y"
+    play_loaded_game = deserialise
+    play_loaded_game.play
+else
+    game = Game.new()
+    game.play
+end
