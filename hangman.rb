@@ -1,3 +1,5 @@
+require "yaml"
+
 module Letters
     ALPHABET = ("a".."z").to_a
 end
@@ -39,6 +41,27 @@ class Game
         correct_guesses.any?("_")
     end
 
+
+    # allow the user to save their current game. Check to see if the file name already in use.
+    def serialize
+        while true
+            puts "Enter a file name: "
+            file_name = gets.chomp.concat(".yaml")
+            if File.exist?(file_name)
+                puts "File name already in use. Enter another name!"
+                next
+            else
+                File.open(file_name, "w") do |file|
+                    file.write(YAML::dump(self))
+                end
+                return
+            end
+        end
+    end
+
+    
+
+    
 
 
 
@@ -89,13 +112,4 @@ end
 
 
 play = Game.new()
-p play.secret_word
-play.play
-
-
-
-
-
-
-
-
+play.serialize
